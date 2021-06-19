@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:myfirst="http://www.mulesoft.org/schema/mule/myfirst"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/myfirst http://www.mulesoft.org/schema/mule/myfirst/current/mule-myfirst.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<myfirst:config name="MyFirst_Config" protocol="HTTPS" doc:name="MyFirst Config" doc:id="1e9bc18e-e322-4406-b24e-d5f737de158f" host="reqres.in" basepath="/api/users" >
+		<myfirst:connection protocol="HTTPS" host="reqres.in" basepath="/api/users" />
+	</myfirst:config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="783d26b0-5968-47d3-9504-8eb501b3c17c" >
+		<http:listener-connection host="localhost" port="8082" />
+	</http:listener-config>
+	<flow name="GetDetailsFlow" doc:id="e999a6be-9f91-42f6-a085-0487d80cf098" >
+		<http:listener doc:name="Listener" doc:id="dd09300c-758a-43c8-bac7-c9dbdb650214" config-ref="HTTP_Listener_config" path="/api/v1/users"/>
+		<myfirst:get-details doc:name="Get details" doc:id="5a76a4e6-44eb-464d-91f3-db67fa148bf9" config-ref="MyFirst_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="090ff8b7-4e75-4303-b9de-7252c7e4ae20" message='#["Get operation payload response" ++ payload]'/>
+	</flow>
+	<flow name="PostDetailsFlow" doc:id="6764f43d-2043-40e3-b8c4-2442b7216eee" >
+		<http:listener doc:name="Listener" doc:id="379b13c1-73fd-4ab3-8578-62057b8c260d" config-ref="HTTP_Listener_config" path="/adduser"/>
+		<myfirst:post-details doc:name="Post details" doc:id="ed92ae01-c3aa-4137-b573-38586e9de85e" config-ref="MyFirst_Config" name="Anil" job="TA">
+			<myfirst:additional-datas >
+				<myfirst:additional-datum key="A" value="1" />
+			</myfirst:additional-datas>
+		</myfirst:post-details>
+		<logger level="INFO" doc:name="Logger" doc:id="0831cde3-449f-47b4-9909-d79aadb25594" message='#["Post payload response" ++ payload]'/>
+	</flow>
+</mule>
